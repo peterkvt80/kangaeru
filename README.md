@@ -14,7 +14,7 @@ git clone https://github.com/peterkvt80/kangaeru.git
 cd kangaeru
 ```
 
-.Install the libraries into a virtual environment
+Install the libraries into a virtual environment
 ```
 source ./environment.sh
 ```
@@ -24,19 +24,18 @@ sudo modprobe vcan
 sudo ip link add dev vcan0 type vcan
 sudo ip link set up vcan0
 ```
-.source the environment and run kangaeru GUI
+Source the environment and run kangaeru GUI
 Only need to source once per session.
 ```
 source .venv/bin/activate
 python3 kangaeru_gui.py
 ```
-.run GPO ECU
+run GPO ECU
 ```
 source .venv/bin/activate
 python3 ecu_gpo.py
 ```
-
-.run Sense ECU
+run Sense ECU
 ```
 source .venv/bin/activate
 python3 ecu_turn_sense.py
@@ -52,13 +51,16 @@ python3 setup.py build
 python3 setup.py install
 ```
 =================
-Use a 32 Buster Repo, or you will have complications running Python, such as not being able t run Thnny.
+# If you are using an older Raspberry Pi OS such as Buster, then follow instructions below
+Older systems do not need a virtual Python environment
+
+Clone the code
 ```
 cd ~
 git clone https://github.com/peterkvt80/kangaeru.git
 cd kangaeru
 ```
-Add a library
+Install a library
 ```
 pip3 install can-j1939
 ```

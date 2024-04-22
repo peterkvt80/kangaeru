@@ -6,6 +6,14 @@ J1939 is a CAN bus standard that is used for heavy machinery like buses, trucks 
 You only need a Raspberry Pi and Sense Hat to run these ECUs if you use a virtual CAN bus. However, if you add CAN interfaces then you can connect them to a real CAN bus.
 Due to changes in Raspberry Pi you should use a legacy OS version. Below is the Debian Bookworm version. Older versions are much simple and the instructions are on the Wiki.
 
+You can examine the code to see how values are packed and then sent. Floating point values from the Sense Hat are converted to integers using an offset and scale factor.
+
+The Yaw rate reads the Sense Hat IMU. It is configured to use six axes so it takes into gravity into account. This means that the Yaw axis is based on rotation around the Up/Down axis and the Raspberry Pi can be in any orientation. What might this be useful for? It could measure the rate of turn of a sprayer boom, so the inside of the turn would need lower flow, and the outside gets higher. Or maybe an setting alarm when taking a trailer around a curve too quickly. Or detecting when an aircraft goes into a flat spin.
+
+Please don't attach these ECUs to a real system. The code may have errors such as conflicting PGNs. It has minimal monitoring.
+
+For example an IMU would probably allow a lot more data to be collected such as the absolute yaw, pitch and roll. It would have an adjustable sample rate and a mute to reduce bus loading when not needed.
+
 # Running this demo on the latest Debian Bookworm
 Clone the source code
 ```

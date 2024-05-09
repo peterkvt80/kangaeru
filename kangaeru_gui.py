@@ -8,6 +8,7 @@
 # sudo ip link set up vcan0
 #
 # For Windows you will need to go to a physical CAN port as socketcan is not an option
+import os
 import argparse
 import tkinter as tk
 from kangaeru_io import Kangaeru_io
@@ -48,10 +49,20 @@ def show_msg(n):
     ca.send(n)
     
 parser = argparse.ArgumentParser(description="my argument parser")
+parser.add_argument("serial_number", nargs="?", default="3456") # Serial number integer
 parser.add_argument("port", nargs="?", default="vcan0") # usually vcan0 or can0
 args = parser.parse_args()
-print(args.port)
-#TODO pass this port to the CA
+print("port = " + args.port + " id = " + args.serial_number)
+
+response = os.system("sudo ip link set "+args.port+" type can bitrate 250000")
+if response!=0:
+    print("Invalid CAN bus. " + str(response))
+    exit() 
+
+response = os.system("sudo ip link set "+args.port+" up")
+if response!=0:
+    print("Invalid CAN bus. " + str(response))
+    exit() 
     
 greeting = tk.Label(text="Kangaeru test ECU")
 greeting.grid( row = 0, column = 0)
@@ -96,7 +107,7 @@ humidity_number = tk.Label(text="nnn.nn", background="#ffffff", height=2, width=
 humidity_number.grid(row = 5, column = 1, columnspan = 2)
 
 # controller application
-ca = Kangaeru_io(3456, args.port) # default vcan0
+ca = Kangaeru_io(args.serial_number, args.port) # default vcan0
 ca.run()
 start_update(ca)
 window.mainloop()

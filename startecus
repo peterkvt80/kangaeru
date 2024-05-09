@@ -1,0 +1,26 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          startecus
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Starts Kangaeru ECUs
+# Description: Starts Kangaeru GPO and sensor ECUs.
+# This is an init.d script.
+# The file should be /etc/init.d/startecus
+# If you change it you should also update
+# sudo update-rc startecus defaults
+# This is where the Isobus Name id is set. It should be unique so make sure to change this for each copy of the ECUs that you create.
+### END INIT INFO
+# https://unix.stackexchange.com/questions/20357/how-can-i-make-a-script-in-etc-init-d-start-at-boot
+case "$1" in
+  start)
+        echo "Kangaeru starting"
+        python3 /home/peter/kangaeru/ecu_gpo.py 4321 can0 &
+        python3 /home/peter/kangaeru/ecu_turn_sense.py 6543 can0 &
+        ;;
+  stop)
+        echo "Kangaeru stopping"
+        ;;
+esac

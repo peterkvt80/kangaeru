@@ -1,6 +1,8 @@
 # Rate of turn (yaw)
 # Sending a number 0..7 to pgn 0xfeed toggles that bit.
-import os
+# This requires the CAN port to be already UP
+# ip link set up can0
+
 import logging
 import time
 import can
@@ -14,12 +16,13 @@ class ECU_Turn_io():
         super().__init__()
         self.init(id, can_port)
 
-    def init(self, id, can_port):
-        
-        response = os.system("sudo ip link set up "+can_port) 
-        if response!=0:
-            print("Invalid CAN bus. " + str(response))
-            exit()
+    def init(self, id, _can_port):
+        self.can_port = _can_port
+        print("id = "+id+" can_port = "+_can_port)
+        #response = os.system("sudo ip link set up "+can_port) 
+        #if response!=0:
+        #    print("Invalid CAN bus. " + str(response))
+        #    exit()
             
         # compose the name descriptor for the new ca
         self.name = j1939.Name(
@@ -31,9 +34,9 @@ class ECU_Turn_io():
             function_instance=2, # Rate of turn ECU
             ecu_instance=0,
             manufacturer_code=64, # Spectra Physics
-            identity_number=0 # Init this from non volatile memory. Each unit should be unique.
+            identity_number=555 # Init this from non volatile memory. Each unit should be unique.
             )
-
+        self.name.identity_number = int(id)
         # create the ControllerApplications
         self.ca = j1939.ControllerApplication(self.name, 130)
         self.state = 0 # state of the GPO
@@ -147,7 +150,8 @@ class ECU_Turn_io():
         # Connect to the CAN bus
         # Arguments are passed to python-can's can.interface.Bus() constructor
         # (see https://python-can.readthedocs.io/en/stable/bus.html).
-        self.ecu.connect(bustype='socketcan', channel='vcan0')
+        print("Connecting to can bus "+self.can_port)
+        self.ecu.connect(bustype='socketcan', channel=self.can_port)
         # ecu.connect(bustype='kvaser', channel=0, bitrate=250000)
         # ecu.connect(bustype='pcan', channel='PCAN_USBBUS1', bitrate=250000)
         # ecu.connect(bustype='ixxat', channel=0, bitrate=250000)

@@ -43,8 +43,9 @@ state = 0 # state of the GPO
 sense = SenseHat()
 sense.clear()
 
-response = os.system("sudo ip link set up "+args.port) 
-if response!=0:
+# 0 is OK, 256 is already configured
+response = os.system("sudo ip link set "+args.port+" up") 
+if response!=0 and response!=256:
     print("Invalid CAN bus. " + str(response))
     exit()
 

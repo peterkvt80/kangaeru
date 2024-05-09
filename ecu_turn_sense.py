@@ -10,8 +10,8 @@
 #2:3	Angular Rate Y	-250 to +252 deg/s	1/128 deg/second/bit	-250 deg
 #4:5	Angular Rate Z	-250 to +252 deg/s	1/128 deg/second/bit	-250 deg
 
-# TODO: command line parameters
-
+import os
+import argparse
 from sense_hat import SenseHat
 import time
 from ecu_turn import ECU_Turn_io
@@ -35,7 +35,13 @@ last_yaw = 0.0
 last_roll = 0.0
 last_pitch = 0.0
 
-can_ecu = ECU_Turn_io(id=1234, can_port='vcan0')
+parser = argparse.ArgumentParser(description="my argument parser")
+parser.add_argument("id", nargs="?", default="123456") # Each ECU of this type must have a unique serial number
+parser.add_argument("port", nargs="?", default="vcan0") # usually vcan0 or can0
+
+args = parser.parse_args()
+
+can_ecu = ECU_Turn_io(id=args.id, can_port=args.port)
 can_ecu.run()
 
 while True:

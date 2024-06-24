@@ -55,13 +55,13 @@ args = parser.parse_args()
 print("port = " + args.port + " id = " + args.serial_number)
 
 response = os.system("sudo ip link set "+args.port+" type can bitrate 250000")
-if response!=0:
-    print("Invalid CAN bus. " + str(response))
+if response!=0 and response!=512:
+    print("Invalid CAN bus.(1) " + str(response))
     exit() 
 
 response = os.system("sudo ip link set "+args.port+" up")
 if response!=0:
-    print("Invalid CAN bus. " + str(response))
+    print("Invalid CAN bus.(2) " + str(response))
     exit() 
     
 greeting = tk.Label(text="Kangaeru test ECU")

@@ -24,8 +24,8 @@ class Kangaeru_io():
         self.timeoutCounter=3
         
         response = os.system("sudo ip link set up "+can_port)        
-        if response!=0:
-            print("Invalid CAN bus. " + str(response))
+        if response!=0 and response!=512:
+            print("Invalid CAN bus... " + str(response))
             exit() 
 
         # compose the name descriptor for the kangaeru ca
@@ -89,7 +89,7 @@ class Kangaeru_io():
             self.temperature = data[2] - 40
             self.pressure = 260 + ((data[3] * 0x100 + data[4]) / 10)
             self.humidity = (data[5] * 0x100 + data[6]) / 100.0
-            #print(str(data[3]) + " " + str(data[4]))
+            print(str(data[2])+" "+str(data[5]) + " " + str(data[6]))
             
     def get_yaw_rate(self):
         # return the yaw rate in degrees per second

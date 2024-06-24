@@ -27,6 +27,7 @@ def payload(value):
     return value
 
 sense = SenseHat()
+sense.clear()
 sense.set_imu_config(False, True, True)  # no compass. Use 6 axis only.
 # Note that this will compensate for orientation. The yaw axis does not depend on the IMU orientation.
 
@@ -67,6 +68,7 @@ while True:
     #print(int(payload(angular_velocity_yaw
     
     temperature = sense.get_temperature()
+    #print ("temperature = " + str(sense.get_temperature()))
     
     pressure = sense.get_pressure()
     

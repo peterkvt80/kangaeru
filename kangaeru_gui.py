@@ -46,7 +46,14 @@ def start_update(ca):
     window.after(1000, command) # This reads in values from the IO and displays them
 
 def show_msg(n):
-    ca.send(n)
+    ca.send(int(n))
+
+# @param index Slider index
+# @param value Slider value
+def send_pwm(index, value): 
+    print("send_pwm index=" + str(index) + "  value="+str(value))
+    ca.send_pwm(index, value)
+
     
 parser = argparse.ArgumentParser(description="my argument parser")
 parser.add_argument("serial_number", nargs="?", default="3456") # Serial number integer
@@ -96,7 +103,7 @@ temp_number.grid(row = 3, column = 1, columnspan = 2)
 
 # Atmospheric pressure display
 pressure_label = tk.Label(text="Pressure mBar", background="#34A2FE", width=14, anchor="w")
-pressure_label.grid(row = 4, column = 0)		
+pressure_label.grid(row = 4, column = 0)
 pressure_number = tk.Label(text="nnn.nn", background="#ffffff", height=2, width=22, anchor="w")
 pressure_number.grid(row = 4, column = 1, columnspan = 2)
 
@@ -105,6 +112,24 @@ humidity_label = tk.Label(text="Humidity %", background="#34A2FE", width=14, anc
 humidity_label.grid(row = 5, column = 0)
 humidity_number = tk.Label(text="nnn.nn", background="#ffffff", height=2, width=22, anchor="w")
 humidity_number.grid(row = 5, column = 1, columnspan = 2)
+
+# PWM Slider
+# Use Frame to pack an array of Scale sliders
+sliders = tk.Frame(borderwidth=1, relief="solid")
+sliders.grid(row = 2,
+             column = 3,
+             rowspan = 2,
+             columnspan = 4             
+             )
+for x in range(8):
+    x=int(x)
+    i=0
+    w0 = tk.Scale(sliders,
+                  from_=0,
+                  to=255,
+                  command=lambda i=x,x=x:send_pwm(int(x),int(i)))
+    w0.grid(row = 0,column = x)
+
 
 # controller application
 ca = Kangaeru_io(args.serial_number, args.port) # default vcan0

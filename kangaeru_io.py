@@ -22,6 +22,7 @@ class Kangaeru_io():
         self.heartbeat=False
         self.GPOOnline=False
         self.timeoutCounter=3
+        self.pwm_data = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         
         response = os.system("sudo ip link set up "+can_port)        
         if response!=0 and response!=512:
@@ -180,6 +181,10 @@ class Kangaeru_io():
         data=[]
         data.append(gpo)
         self.ca.send_pgn(0, 0xfe, 0xed, 1, data)
+        
+    def send_pwm(self, channel, value):
+        self.pwm_data[channel] = value;
+        self.ca.send_pgn(0, 0xf0, 0x0d, 8, self.pwm_data)
 
     def run(self):
         print("Initializing")

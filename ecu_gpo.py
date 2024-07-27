@@ -63,20 +63,48 @@ def ca_receive(priority, pgn, source, timestamp, data):
     :param bytearray data:
         Data of the PDU
     """
+    # This PGN toggles the state of one GPIO bit.
     global state
     # print("PGN {} length {}".format(pgn, len(data))) # see what is being received
     if pgn==0xfeed:
         state = state ^ (1 << data[0])
         # print("got data. state="+str(state))
-    # LED goes green if on
-    sense.set_pixel(0,0,0,(state & 0x01>0)*255,0)
-    sense.set_pixel(1,0,0,(state & 0x02>0)*255,0)
-    sense.set_pixel(2,0,0,(state & 0x04>0)*255,0)
-    sense.set_pixel(3,0,0,(state & 0x08>0)*255,0)
-    sense.set_pixel(4,0,0,(state & 0x10>0)*255,0)
-    sense.set_pixel(5,0,0,(state & 0x20>0)*255,0)
-    sense.set_pixel(6,0,0,(state & 0x40>0)*255,0)
-    sense.set_pixel(7,0,0,(state & 0x80>0)*255,0)    
+        # LED goes green if on
+        sense.set_pixel(0,0,0,(state & 0x01>0)*255,0)
+        sense.set_pixel(1,0,0,(state & 0x02>0)*255,0)
+        sense.set_pixel(2,0,0,(state & 0x04>0)*255,0)
+        sense.set_pixel(3,0,0,(state & 0x08>0)*255,0)
+        sense.set_pixel(4,0,0,(state & 0x10>0)*255,0)
+        sense.set_pixel(5,0,0,(state & 0x20>0)*255,0)
+        sense.set_pixel(6,0,0,(state & 0x40>0)*255,0)
+        sense.set_pixel(7,0,0,(state & 0x80>0)*255,0)    
+
+    # This PGN takes in eight PWM values
+    # and displays on row 1 of the LEDs
+    if pgn==0xf00d:
+        print("got f00d data. state="+str(data[0]))
+        for i in range(0, 8):
+            d=data[i]
+            # map so we get shades of red = 0, green = 128 and blue = 255
+            red = 255 - d*2
+            if red < 0:
+                red = 0
+            if red > 255:
+                red = 255
+            green = 2 * d
+            if d > 127:
+                green = 2 * (255 -d)
+            if green < 0:
+                green = 0
+            if green > 255:
+                green = 255
+            blue = 2 * (d - 127)
+            if  blue < 0:
+                blue = 0
+            if  blue > 255:
+                blue = 255
+                
+            sense.set_pixel(i,1,red,green,blue)
 
 def ca_timer_callback(cookie):
     """Callback for sending messages
